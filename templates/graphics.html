@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Создание графиков</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            padding: 50px;
+        }
+
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .input-group-text {
+            background-color: #8A2BE2;
+            color: white;
+            border: none;
+        }
+
+        .btn-custom {
+            background-color: #8A2BE2;
+            color: white;
+            border-radius: 30px;
+        }
+
+        .btn-custom:hover {
+            background-color: #6c23b6;
+        }
+
+        h1 {
+            color: #8A2BE2;
+        }
+
+        .form-control {
+            border-radius: 10px;
+        }
+
+        .design-option {
+            text-align: center;
+            flex: 1;
+            margin: 0 10px;
+        }
+
+        .design-option img {
+            width: 100%;
+            max-width: 250px;
+            /* Измените размер по своему усмотрению */
+            height: auto;
+        }
+
+        .wait img {
+            width: 100%;
+            max-width: 50px;
+            /* Измените размер по своему усмотрению */
+            height: auto;
+        }
+
+        .design-option .form-check {
+            display: flex;
+            justify-content: center;
+            margin-top: 10px;
+        }
+
+        .color-picker {
+            width: 100%;
+            height: 40px;
+            padding: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1 class="text-center">Создание графиков</h1>
+
+        <div class="mb-3">
+            <label class="form-label">Загрузите данные в формате csv:</label>
+            <input type="file" id="fileUpload" class="form-control">
+            <button class="btn btn-custom mt-2" id="getActions">&#8594;</button>
+        </div>
+
+        <div class="mb-3" style="display:none;" id="typeOfGraphic">
+            <label class="form-label mt-3">Выберите тип графика:</label>
+            <div class="d-flex justify-content-between mb-3">
+                <div class="d-flex justify-content-between mb-3">
+                    <div class="design-option">
+                        <img src="{{ url_for('static', filename='image8.png') }}" alt="pie" class="img-fluid">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="typeGraphic" id="typeGraphic1"
+                                value="pie">
+                            <label class="form-check-label" for="typeGraphic1"></label>
+                        </div>
+                    </div>
+                    <div class="design-option">
+                        <img src="{{ url_for('static', filename='image7.png') }}" alt="hist" class="img-fluid">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="typeGraphic" id="typeGraphic2"
+                                value="hist">
+                            <label class="form-check-label" for="typeGraphic2"></label>
+                        </div>
+                    </div>
+                    <div class="design-option">
+                        <img src="{{ url_for('static', filename='image6.png') }}" alt="plot" class="img-fluid">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="typeGraphic" id="typeGraphic3"
+                                value="plot">
+                            <label class="form-check-label" for="typeGraphic3"></label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button class="btn btn-custom mt-2" id="getNames">&#8594;</button>
+        </div>
+
+        <div class="mb-3" id="getColumns" style="display:none;">
+            <label for="column" class="form-label">Введите названия колонок для отрисовки графика через запятую без
+                пробелов:</label>
+            <input class="form-control" id="column" placeholder="Введите названия колонок"></input>
+            <button class="btn btn-custom mt-2" id="columnBtn">&#8594;</button>
+        </div>
+
+        <!-- <div class="mb-3" style="display:none;" id="download">
+            <img src="{{ url_for('static', filename='generated_graphic.png') }}" alt="График" class="img-fluid">
+            <div class="mb-3">
+                <button class="btn btn-custom" id="generateBtn">Скачать график</button>
+            </div>
+        </div> -->
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+    <script>
+        $('#getActions').click(function () {
+            const file = $('#fileUpload').val();
+            if (file.trim() === '') {
+                return;
+            }
+            $('#typeOfGraphic').show();
+        });
+
+        $('#getNames').click(function () {
+            $('#getColumns').show();
+        });
+
+        $('#columnBtn').click(function () {
+            const columns = $('#column').val();
+            const fileInput = document.getElementById('fileUpload').files[0];
+            const type = $('input[name="typeGraphic"]:checked').val();
+
+            if (!columns.trim() || !fileInput || !type) {
+                alert('Пожалуйста, заполните все поля!');
+                return;
+            }
+
+            let formData = new FormData();
+            formData.append('file', fileInput);
+            formData.append('type', type);  // Передаем тип графика
+            formData.append('columns', columns);  // Передаем названия колонок
+
+            $.ajax({
+                url: '/api/getGraphic',
+                type: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function (response) {
+                    const imageUrl = response.imageUrl;
+                    location.href = imageUrl;
+                    // Устанавливаем путь к сгенерированной картинке, который вернул API
+                    // $('#generatedImage').attr('src', response.imageUrl);
+                    $('#download').show();  // Показываем картинку и кнопку скачать
+                },
+                error: function () {
+                    alert('Ошибка при создании графика!');
+                }
+            });
+        });
+
+        // document.getElementById('generateBtn').addEventListener('click', function () {
+        //     const link = document.createElement('a');
+        //     link.href = $('#generatedImage').attr('src');  // Скачиваем текущий график
+        //     link.download = 'graphic.png';
+        //     document.body.appendChild(link);
+        //     link.click();
+        //     document.body.removeChild(link);
+        // });
+
+
+    </script>
+</body>
+
+</html>

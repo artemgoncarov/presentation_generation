@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Презентация Генератор</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            padding: 50px;
+        }
+
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .input-group-text {
+            background-color: #8A2BE2;
+            color: white;
+            border: none;
+        }
+
+        .btn-custom {
+            background-color: #8A2BE2;
+            color: white;
+            border-radius: 30px;
+        }
+
+        .btn-custom:hover {
+            background-color: #6c23b6;
+        }
+
+        h1 {
+            color: #8A2BE2;
+        }
+
+        .form-control {
+            border-radius: 10px;
+        }
+
+        .design-option {
+            text-align: center;
+            flex: 1;
+            margin: 0 10px;
+        }
+
+        .design-option img {
+            width: 100%;
+            max-width: 250px;
+            /* Измените размер по своему усмотрению */
+            height: auto;
+        }
+
+        .wait img {
+            width: 100%;
+            max-width: 50px;
+            /* Измените размер по своему усмотрению */
+            height: auto;
+        }
+
+        .design-option .form-check {
+            display: flex;
+            justify-content: center;
+            margin-top: 10px;
+        }
+
+        .color-picker {
+            width: 100%;
+            height: 40px;
+            padding: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1 class="text-center">Генератор Презентации</h1>
+
+        <!-- Ввод названия презентации -->
+        <div class="mb-3">
+            <label for="presentationName" class="form-label">Введите название презентации:</label>
+            <div class="input-group">
+                <input type="text" class="form-control" id="presentationName" placeholder="Название презентации">
+                <button class="btn btn-custom" id="getDescriptionBtn">&#8594;</button>
+            </div>
+        </div>
+
+        <!-- Выбор действия -->
+        <div id="choiceGroup" class="mb-3" style="display:none;">
+            <label class="form-label">Выберите действие:</label>
+            <button class="btn btn-custom" id="chooseTemplate">Выбрать шаблон</button>
+            <button class="btn btn-custom" id="uploadTemplate">Создать шаблон</button>
+            <button class="btn btn-custom" id="createTemplate">Загрузить шаблон</button>
+        </div>
+
+        <!-- Выбор дизайна -->
+        <div id="designGroup" class="mb-3" style="display:none;">
+            <label class="form-label">Выберите дизайн:</label>
+            <div class="d-flex justify-content-between mb-3">
+                <div class="design-option">
+                    <img src="{{ url_for('static', filename='image1.jpeg') }}" alt="Дизайн 1" class="img-fluid">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="design" id="design1" value="1">
+                        <label class="form-check-label" for="design1"></label>
+                    </div>
+                </div>
+                <div class="design-option">
+                    <img src="{{ url_for('static', filename='image2.jpeg') }}" alt="Дизайн 2" class="img-fluid">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="design" id="design2" value="2">
+                        <label class="form-check-label" for="design2"></label>
+                    </div>
+                </div>
+            </div>
+            <button class="btn btn-custom mt-2" id="getDescriptionAfterDesignBtn">&#8594;</button>
+        </div>
+
+
+        <!-- Выбор цвета для загрузки шаблона -->
+        <div id="colorGroup" class="mb-3" style="display:none;">
+            <label class="form-label">Выберите цвет:</label>
+            <input type="color" id="colorPicker" class="form-control color-picker">
+            <label class="form-label mt-3">Выберите шрифт:</label>
+            <div class="d-flex justify-content-between mb-3">
+                <div class="design-option">
+                    <img src="{{ url_for('static', filename='image3.png') }}" alt="Arial" class="img-fluid">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="uploadFont" id="uploadFont1" value="Arial">
+                        <label class="form-check-label" for="uploadFont1"></label>
+                    </div>
+                </div>
+                <div class="design-option">
+                    <img src="{{ url_for('static', filename='image4.jpeg') }}" alt="Times New Roman" class="img-fluid">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="uploadFont" id="uploadFont2"
+                            value="Times New Roman">
+                        <label class="form-check-label" for="uploadFont2"></label>
+                    </div>
+                </div>
+                <div class="design-option">
+                    <img src="{{ url_for('static', filename='image5.jpg') }}" alt="Garamond" class="img-fluid">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="uploadFont" id="uploadFont3"
+                            value="Garamond">
+                        <label class="form-check-label" for="uploadFont3"></label>
+                    </div>
+                </div>
+                <div class="design-option">
+                    <img src="{{ url_for('static', filename='image9.png') }}" alt="Candara Light" class="img-fluid">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="uploadFont" id="uploadFont4"
+                            value="Candara Light">
+                        <label class="form-check-label" for="uploadFont4"></label>
+                    </div>
+                </div>
+                <div class="design-option">
+                    <img src="{{ url_for('static', filename='image10.png') }}" alt="Corbel Light" class="img-fluid">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="uploadFont" id="uploadFont5"
+                            value="Corbel Light">
+                        <label class="form-check-label" for="uploadFont5"></label>
+                    </div>
+                </div>
+            </div>
+            <label class="form-label">Выберите цвет текста:</label>
+            <input type="color" id="colorPicker1" class="form-control color-picker">
+            <label class="form-label">Укажите количество слайдов:</label>
+            <input type="number" id="numberPicker" class="form-control number-picker">
+            <button class="btn btn-custom mt-2" id="getDescriptionAfterUploadBtn">&#8594;</button>
+        </div>
+
+        <!-- Загрузка файла для создания шаблона -->
+        <div id="createGroup" class="mb-3" style="display:none;">
+            <label class="form-label">Загрузите файл:</label>
+            <input type="file" id="fileUpload" class="form-control">
+            <button class="btn btn-custom mt-2" id="getDescriptionAfterCreateBtn">&#8594;</button>
+        </div>
+
+        <!-- Ввод описания презентации -->
+        <div id="descrGroup" class="mb-3" style="display:none;">
+            <label for="descr" class="form-label">Описание Презентации:</label>
+            <textarea class="form-control" id="descr" rows="3" placeholder="Описание презентации"></textarea>
+            <button class="btn btn-custom mt-2" id="descrGroupBtn">&#8594;</button>
+        </div>
+
+        <!-- Ввод плана презентации -->
+        <div id="descriptionGroup" class="mb-3" style="display:none;">
+            <label for="description" class="form-label">План Презентации:</label>
+            <textarea class="form-control" id="description" rows="5" placeholder="План презентации"></textarea>
+            <button class="btn btn-custom mt-2" id="getSlidesBtn">&#8594;</button>
+        </div>
+
+        <!-- Заголовок для слайдов -->
+        <h1 id="slideTitle" class="text-center" style="display:none;">Введите текст для слайда</h1>
+
+        <!-- Ввод текста слайдов -->
+        <div id="slidesGroup" class="mb-3"></div>
+
+        <!-- Кнопка отправки -->
+        <button class="btn btn-custom" id="generateBtn" style="display:none;">Отправить</button>
+    </div>
+
+    <div id="loadingMessage" class="text-center" style="display: none; margin-top: 20px;">
+        <p><img src="{{ url_for('static', filename='anim.gif') }}" alt="" class="wait" width="5%">Пожалуйста,
+            подождите...</p>
+    </div>
+
+    <div id="slideLoadingMessage" class="text-center" style="display: none; margin-top: 20px;">
+        <p><img src="{{ url_for('static', filename='anim.gif') }}" alt="" class="wait" width="5%">Пожалуйста,
+            подождите...</p>
+    </div>
+
+    <!-- HTML часть для числового инпута -->
+    <div id="numericInputContainer" style="display:none;">
+        <label for="numericInput">Введите число слайдов:</label>
+        <input type="number" id="numericInput" min="1" placeholder="Число слайдов">
+    </div>
+
+    <div class="container mt-4">
+        <label class="form-label"><a href="/graphics">Создание графиков</a></label>
+        <div class="progress">
+            <div id="progressBar" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"
+                style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+        </div>
+    </div>
+
+
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+    <!-- Скрипт для взаимодействия с API -->
+    <script>
+        let currentSlideIndex = 0;
+        let useTemplate = true;
+        let progress = 0;
+        let description = []; // Массив описаний слайдов
+        let totalSlides = 0; // Общее количество слайдов
+        let slidesImgGen = [];
+
+        // Обновление прогресс-бара
+        function updateProgress(increment) {
+            progress += increment;
+            if (progress > 100) progress = 100;  // Ограничиваем прогресс до 100%
+            $('#progressBar').css('width', `${progress}%`).attr('aria-valuenow', progress);
+        }
+
+        // Когда сгенерируется план презентации (Заполнение на 30%)
+        function fetchPresentationDescription(presentationName) {
+            $('#loadingMessage').show();  // Показываем сообщение "Подождите, пожалуйста"
+
+            $.ajax({
+                url: '/api/getDescription',
+                type: 'GET',
+                data: {
+                    name: presentationName,
+                    n_slides: document.querySelector('.number-picker').value,
+                    description: $('#descr').val()
+                },
+                success: function (response) {
+                    $('#description').val(response.join('\n'));  // Заполняем поле с планом презентации
+                    $('#descriptionGroup').show();   // Показываем поле ввода с описанием
+                    // console.log({
+                    //     name: presentationName,
+                    //     n_slides: document.querySelector('.number-picker').value,
+                    //     description: $('#descr').val()
+                    // });
+                    updateProgress(30);  // План сгенерирован, увеличиваем прогресс на 30%
+                },
+                error: function () {
+                    alert('Ошибка при получении плана презентации');
+                },
+                complete: function () {
+                    $('#loadingMessage').hide();  // Скрываем сообщение
+                }
+            });
+        }
+
+        // Показ выбора действия (Заполнение на 10%)
+        $('#getDescriptionBtn').click(function () {
+            const presentationName = $('#presentationName').val();
+            if (presentationName.trim() === '') {
+                alert('Введите название презентации');
+                return;
+            }
+            $('#choiceGroup').show(); // Показываем выбор между шаблоном, загрузкой или созданием шаблона
+            updateProgress(10);  // Название введено, увеличиваем прогресс на 10%
+        });
+
+
+        // Выбор шаблона (Заполнение на 15%)
+        $('#chooseTemplate').click(function () {
+            useTemplate = true;
+            $('#choiceGroup').hide();
+            $('#designGroup').show(); // Показываем выбор дизайна
+        });
+
+        // Загрузка шаблона (Заполнение на 15%, потом 20% после отправки файла)
+        $('#uploadTemplate').click(function () {
+            useTemplate = false;
+            $('#choiceGroup').hide();
+            $('#colorGroup').show(); // Показываем выбор цвета
+        });
+
+        // Создание шаблона (Заполнение на 15%, потом на 20% после выбора цвета)
+        $('#createTemplate').click(function () {
+            useTemplate = false;
+            $('#choiceGroup').hide();
+            $('#createGroup').show(); // Показываем поле для загрузки файла
+        });
+
+        $('#colorPicker').change(function () {
+            updateProgress(20);  // Выбран цвет, увеличиваем прогресс на 20%
+        });
+
+        $('#descrGroupBtn').click(function () {
+            const presentationName = $('#presentationName').val();
+            fetchPresentationDescription(presentationName);
+        });
+
+        // Получение плана презентации после выбора дизайна
+        $('#getDescriptionAfterDesignBtn').click(function () {
+            if (!$('input[name="design"]:checked').val()) {
+                return;
+            }
+            $('#descrGroup').show();
+        });
+
+        $('#getDescriptionAfterUploadBtn').click(function () {
+            updateProgress(20);  // После отправки файла заполняем на 20%
+            $('#descrGroup').show();
+            // const presentationName = $('#presentationName').val();
+            // fetchPresentationDescription(presentationName); // Получаем план презентации
+        });
+
+        // Получение плана презентации после создания шаблона
+        $('#getDescriptionAfterCreateBtn').click(function () {
+            // const presentationName = $('#presentationName').val();
+            // fetchPresentationDescription(presentationName); // Получаем план презентации
+            $('#descrGroup').show();
+        });
+
+        // Ввод текста слайдов (Заполнение на оставшиеся 70% по мере ввода слайдов)
+        $('#getSlidesBtn').click(function () {
+            $('#slidesGroup').empty();  // Очищаем блок слайдов
+            currentSlideIndex = 0;      // Сбрасываем индекс слайда
+            $('#slideTitle').show();    // Показываем заголовок h1
+            let description = $('#description').val().split('\n'); // Разбиваем текст на строки
+            updateProgress(5);  // Начало заполнения слайдов
+            showNextSlide(description); // Показываем первый слайд
+        });
+
+
+
+        function showNextSlide(description) {
+            if (currentSlideIndex < description.length) {
+                let slideText = description[currentSlideIndex];
+                let presentationName = $('#presentationName').val();
+
+                $('#slideLoadingMessage').show();
+
+                $.ajax({
+                    url: '/api/getSlideText',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        text: slideText,
+                        name: presentationName,
+                        n: currentSlideIndex,
+                        template: $('input[name="design"]:checked').val(),
+                        description: $('#descr').val()
+                    }),
+                    success: function (response) {
+                        if (typeof response === 'string') {
+                            let slideHtml = `
+                            <label class="form-label">${$('#description').val().split('\n')[currentSlideIndex]}</label>
+                            <div id="slide_${currentSlideIndex}" class="input-group mb-3 slide-container">
+                                <span class="input-group-text">${currentSlideIndex + 1}</span>
+                                <textarea class="form-control" rows="3">${response}</textarea>
+                                <div class="d-flex justify-content-between mt-2">
+                                    <input type="file" class="form-control file-input" accept="image/*" id="slideImage_${currentSlideIndex}">
+                                </div>
+                                <button id="genImg_${currentSlideIndex}" class="btn btn-outline-secondary nextSlideBtn mt-2" type="button" style="background-color: #8A2BE2; color: white;">
+                                    Сгенерировать картинку
+                                </button>
+                                <button id="uploadBtn_${currentSlideIndex}" class="btn btn-outline-secondary nextSlideBtn mt-2" type="button" style="background-color: #8A2BE2; color: white;">
+                                    &#8594;
+                                </button>
+                            </div>
+                        `;
+                            $('#slidesGroup').append(slideHtml);
+
+                            $(`#uploadBtn_${currentSlideIndex}`).click(function () {
+                                currentSlideIndex++;
+                                updateProgress((100 - progress) / (description.length - currentSlideIndex + 1));  // Прогресс увеличивается на часть от 70% по каждому слайду
+                                if (currentSlideIndex < description.length) {
+                                    showNextSlide(description);
+                                } else {
+                                    $('#generateBtn').show();
+                                }
+                                $(this).prop('disabled', true);
+                            });
+
+                            $(`#genImg_${currentSlideIndex}`).click(function () {
+                                $(`#slideImage_${currentSlideIndex}`).hide(); // Скрываем инпут для загрузки изображения
+
+                                // Отправляем запрос на сервер для генерации изображения
+                                $.ajax({
+                                    url: '/api/genImg',  // Эндпоинт для генерации изображения
+                                    type: 'POST',
+                                    contentType: 'application/json',
+                                    data: JSON.stringify({
+                                        text: $(`#slide_${currentSlideIndex} textarea`).val(), // Текст слайда
+                                        name: $('#presentationName').val(), // Название презентации
+                                        n: currentSlideIndex
+                                    }),
+                                }).then((res) => {
+                                    slidesImgGen.push([currentSlideIndex, res]);
+                                    console.log(slidesImgGen);
+                                });
+                            });
+
+                        } else {
+                            alert('Неожиданный формат ответа для текста слайда.');
+                        }
+                    },
+                    error: function () {
+                        alert('Ошибка при получении текста слайда');
+                    },
+                    complete: function () {
+                        $('#slideLoadingMessage').hide();
+                    }
+                });
+            }
+        }
+
+
+        // Отправка итоговых данных
+        $('#generateBtn').click(async function () {
+            let formData = new FormData();
+            formData.append('file', $('#fileUpload')[0].files[0]);
+
+            if ($('#fileUpload')[0].files[0]) {
+                $.ajax({
+                    url: '/upload_template',  // Эндпоинт для загрузки файла
+                    type: 'POST',
+                    data: formData,
+                    processData: false, // Не обрабатывать данные
+                    contentType: false, // Не устанавливать заголовок Content-Type
+                });
+            }
+
+            let name = $('#presentationName').val();
+            let design = $('input[name="design"]:checked').val();
+            let slides = [];
+            let slidesData = $('#slidesGroup .slide-container').map(function (index) {
+                let slideText = $(this).find('textarea').val();  // Текст слайда
+
+                // Проверяем, был ли сгенерирован путь до изображения для данного слайда
+                let imagePath = slides[index] && slides[index].image_path ? slides[index].image_path : '';
+
+                return {
+                    "text": slideText,
+                    "image_path": imagePath  // Путь к изображению (если оно было сгенерировано)
+                };
+            }).get();
+
+            
+
+            // Сначала создаем массив промисов для загрузки изображений
+            let imageUploadPromises = $('#slidesGroup .slide-container').map(async function () {
+                let slideText = $(this).find('textarea').val();  // Получаем текст слайда
+                let slideImageInput = $(this).find('input[type="file"]')[0];  // Файл изображения
+                let imagePath = '';
+
+                if (slideImageInput && slideImageInput.files.length > 0) {
+                    let formData = new FormData();
+                    formData.append('file', slideImageInput.files[0]);
+
+                    // Загружаем изображение на сервер
+                    return $.ajax({
+                        url: '/upload_image',  // Эндпоинт для загрузки картинки
+                        type: 'POST',
+                        data: formData,
+                        contentType: false,
+                        processData: false,
+                        async: false,
+                        success: function (response) {
+                            imagePath = response.file_path;
+                        },
+                        error: function () {
+                            alert('Ошибка при загрузке изображения');
+                        }
+                    }).then(() => {
+                        slides.push({
+                            "text": slideText,  // Описание слайда
+                            "image_path": imagePath  // Путь до изображения
+                        });
+                    });
+                } else {
+                    slides.push({
+                        "text": slideText,  // Описание слайда
+                        "image_path": slidesImgGen[currentSlideIndex] || ''  // Используем сгенерированный путь или пустую строку
+                    });
+                }
+            }).get(); // Преобразуем в массив
+
+            // Дождемся завершения всех загрузок изображений
+            await Promise.all(imageUploadPromises);
+
+            for (let i = 0; i < slidesImgGen.length; i++) {
+                slides[slidesImgGen[i][0]]["image_path"] = slidesImgGen[i][1]
+            }
+
+            // Собираем JSON объект для презентации
+            let fileInput = $('#fileUpload')[0];
+            let presentationData;
+            if (fileInput.files && fileInput.files[0]) {
+                presentationData = {
+                    "name": name,
+                    "design": design,
+                    "plan": $('#description').val().split('\n'),
+                    "slides": slides,
+                    "file_path": $('#fileUpload')[0].files[0].name
+                };
+            } else if (design) {
+                presentationData = {
+                    "name": name,
+                    "design": design,
+                    "plan": $('#description').val().split('\n'),
+                    "slides": slides,
+                };
+            } else {
+                presentationData = {
+                    "name": name,
+                    "plan": $('#description').val().split('\n'),
+                    "slides": slides,
+                    "font": $('input[name="uploadFont"]:checked').val(),
+                    "color": $("#colorPicker").val(),
+                    "font_color": $("#colorPicker1").val()
+                }
+            }
+
+            // Отправляем JSON на сервер
+            $.ajax({
+                url: '/save_presentation',  // Эндпоинт для сохранения JSON
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(presentationData),
+                success: function () {
+                    location.href = "/api/download";
+                },
+                error: function () {
+                    alert('Ошибка при сохранении презентации');
+                }
+            });
+        });
+
+
+    </script>
+</body>
+
+</html>
