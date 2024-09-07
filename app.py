@@ -155,9 +155,7 @@ def save_presentation():
         elif design == "2":
             generate_presentation_maket(slides, plan, design, name, 'static/presentations/123.pptx', maket='2.pptx')
     except:
-        # print(err)
         try:
-            print(123)
             font_name = data['font']
             font_color = data['font_color']
             bg_color = data['color']
@@ -251,4 +249,4 @@ def generate():
 
 
 if __name__ == '__main__':
-    app.run(port=1488, debug=True)
+    app.run(port=5000, host="0.0.0.0", debug=False)
